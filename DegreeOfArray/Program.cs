@@ -8,6 +8,19 @@ namespace DegreeOfArray
         static void Main(string[] args)
         {
             int[] array = new int[] {1,2,3,4,5,6,7,8,9,1,2,1,1,2,2,1,4,6 };
+
+            if (array.Length == 0)
+            {
+                Console.WriteLine("empty Array");
+                return;
+            }
+
+            if (array.Length == 1)
+            {
+                Console.WriteLine("The degree of array is: " + 1 + " and minimum aubarray is same as input array");
+                return;
+            }
+
             var elementInfo = GetDegreeAndIndices(array);
             Console.WriteLine("The degree of array is: " + elementInfo.Count);
 
