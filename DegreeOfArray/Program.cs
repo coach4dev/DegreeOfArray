@@ -7,7 +7,7 @@ namespace DegreeOfArray
     {
         static void Main(string[] args)
         {
-            int[] array = new int[] {1,2,3,4,5,6,7,8,9,1,2,1,1,2,2,1,4,6 };
+            int[] array = new int[] { 1, 2, 3, 4, 5, 1, 7, 9, 1, 2, 5, 3 };
 
             if (array.Length == 0)
             {
@@ -24,9 +24,9 @@ namespace DegreeOfArray
             var elementInfo = GetDegreeAndIndices(array);
             Console.WriteLine("The degree of array is: " + elementInfo.Count);
 
-            var subArraywithSameDegree = GetSubArray(array, elementInfo.LeftIndex, elementInfo.RightIndex);
-            Console.WriteLine("The sub array with same degree is: ");
-            foreach (var i in subArraywithSameDegree)
+            var minSubArraywithSameDegree = GetSubArray(array, elementInfo.LeftIndex, elementInfo.RightIndex);
+            Console.WriteLine("The minimum sub array with same degree is: ");
+            foreach (var i in minSubArraywithSameDegree)
             {
                 Console.Write(i + " ,");
             }
@@ -37,22 +37,55 @@ namespace DegreeOfArray
         public static ElementInfo GetDegreeAndIndices(int[] array)
         {
             var keyValuePairs = GetElementInfos(array);
-            var result = GetElementInfoWithHighestCount(keyValuePairs);
-            return result;
+            var elementInfoList = GetElementInfosWithHighestCount(keyValuePairs);
+            var elelemtInfoWithSmallestSubArray = GetSmallestSubArray(elementInfoList);
+            return elelemtInfoWithSmallestSubArray;
         }
 
-        private static ElementInfo GetElementInfoWithHighestCount(Dictionary<int, ElementInfo> keyValuePairs)
+        private static ElementInfo GetSmallestSubArray(List<ElementInfo> elementInfoList)
+        {
+            if (elementInfoList.Count == 1)
+            {
+                return elementInfoList[0];
+            }
+
+            var elelemtInfoWithSmallestSubArray = elementInfoList[0];
+            int minSubArrayLength = elementInfoList[0].RightIndex - elementInfoList[0].LeftIndex + 1;
+
+            for (var i = 1; i < elementInfoList.Count; i++)
+            {
+                var subArrayLength = elementInfoList[i].RightIndex - elementInfoList[i].LeftIndex + 1;
+                if (subArrayLength < minSubArrayLength)
+                {
+                    minSubArrayLength = subArrayLength;
+                    elelemtInfoWithSmallestSubArray = elementInfoList[i];
+                }
+            }
+            return elelemtInfoWithSmallestSubArray;
+        }
+
+        private static List<ElementInfo> GetElementInfosWithHighestCount(Dictionary<int, ElementInfo> keyValuePairs)
         {
             int degree = 0;
             int degreeElement = 0;
-            ElementInfo result = new ElementInfo();
+            List<ElementInfo> result = new List<ElementInfo>();
             foreach (var kvp in keyValuePairs)
             {
+                if (kvp.Value.Count < degree)
+                {
+                    continue;
+                }
+
+                if (kvp.Value.Count == degree)
+                {
+                    result.Add(kvp.Value);
+                }
+
                 if (kvp.Value.Count > degree)
                 {
                     degree = kvp.Value.Count;
                     degreeElement = kvp.Key;
-                    result = kvp.Value;
+                    result = new List<ElementInfo>() { kvp.Value };
                 }
             }
 
